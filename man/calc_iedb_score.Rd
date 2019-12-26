@@ -6,8 +6,7 @@
 \usage{
 calc_iedb_score(
   pep,
-  db = c("human", "mouse"),
-  db_file = NULL,
+  db = "human",
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
 )
@@ -15,9 +14,8 @@ calc_iedb_score(
 \arguments{
 \item{pep}{a vector of peptides.}
 
-\item{db}{an available database, can be one of "human" and "mouse".}
-
-\item{db_file}{you can set this to specify the (fasta) database file
+\item{db}{an available database, can be one of "human" and "mouse".
+Or you can set this to specify the (fasta) database file
 to be searched instead of using standard database.}
 
 \item{tmp_dir}{path for storing temp files.}
