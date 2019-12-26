@@ -49,16 +49,6 @@ calc_iedb_score <- function(pep,
   tmp_fasta <- file.path(tmp_dir, "iedb_score_fasta.fa")
   Biostrings::writeXStringSet(AA, file = tmp_fasta, format = "fasta")
 
-  # run blastp-short for iedb matches
-  # https://www.ncbi.nlm.nih.gov/books/NBK279684/
-  # flags here taken from Lukza et al.:
-  # -task blastp-short optimized blast for <30 AA, uses larger word sizes
-  # -matrix use BLOSUM62 sub substitution matrix
-  # -evalue expect value for saving hits
-  # -gapopen, -gapextend, numeric cost to a gapped alignment and
-  # -outfmt, out put a csv with colums, seqids for query and database seuqnence, start and end of sequence match,
-  # length of overlap, number of mismatches, percent identical, expected value, bitscore
-
   message("=> Running blastp for homology to IEDB antigens..")
   if (is.null(db_file)) {
     if (db == "mouse") {
@@ -81,27 +71,14 @@ calc_iedb_score <- function(pep,
     }
   }
 
-  db <- paste(
-    " -db", db_file
-  )
-
+  db <- db_file
   tmp_iedb_out <- file.path(tmp_dir, "blastp_iedbout.csv")
 
-  cmds <- paste0(
-    "blastp -query ",
+  cmd_blastp(
     tmp_fasta,
     db,
-    " -evalue 100000000 ",
-    " -matrix BLOSUM62 ",
-    " -gapopen 11 ",
-    " -gapextend 1 ",
-    " -out ",
-    tmp_iedb_out,
-    " -num_threads ",
-    parallel::detectCores(),
-    " -outfmt '10 qseqid sseqid qseq qstart qend sseq sstart send length mismatch pident evalue bitscore'"
+    tmp_iedb_out
   )
-  system(cmds)
 
   blastdt <- list.files(
     path = tmp_dir,
@@ -120,8 +97,7 @@ calc_iedb_score <- function(pep,
   }
 
   blastdt <- data.table::fread(blastdt)
-  blastdt %>% data.table::setnames(
-    names(.),
+  colnames(blastdt) <-
     c(
       "nmer_id",
       "IEDB_anno",
@@ -137,7 +113,6 @@ calc_iedb_score <- function(pep,
       "evalue",
       "bitscore"
     )
-  )
 
   blastdt <- blastdt[, nmer := nmer %>% stringr::str_replace_all(pattern = "-|\\*", replacement = "")] %>%
     .[, WT.peptide := WT.peptide %>% stringr::str_replace_all(pattern = "-|\\*", replacement = "")] %>%
@@ -158,8 +133,8 @@ calc_iedb_score <- function(pep,
 
   # get full IEDB ref here
   fa <- Biostrings::readAAStringSet(db_file %>%
-                                      stringr::str_replace("bdb$", "fasta") %>%
-                                      stringr::str_replace("^-db\\ ", ""))
+    stringr::str_replace("bdb$", "fasta") %>%
+    stringr::str_replace("^-db\\ ", ""))
   f <- fa %>% as.character()
   names(f) <- names(fa)
 
@@ -203,11 +178,11 @@ SW_align <- function(col1,
                      gap_open = -11,
                      gap_extend = -1) {
   al <- Biostrings::pairwiseAlignment(col1, col2,
-                                      substitutionMatrix = "BLOSUM62",
-                                      gapOpening = gap_open,
-                                      gapExtension = gap_extend,
-                                      type = "local",
-                                      scoreOnly = TRUE
+    substitutionMatrix = "BLOSUM62",
+    gapOpening = gap_open,
+    gapExtension = gap_extend,
+    type = "local",
+    scoreOnly = TRUE
   )
 
   if (length(al) == 0) al <- as.numeric(NA)
@@ -226,6 +201,8 @@ modeleR <- function(als, a = 26, k = 4.86936) {
 # makeblastdb -in Mu_iedb.fasta  -dbtype prot -out Mu_iedb.fasta -hash_index
 
 utils::globalVariables(
-  c(".", "IEDB_anno", "SW", "WT.peptide", "iedb_score",
-    "msw", "nmer", "nmer_id")
+  c(
+    ".", "IEDB_anno", "SW", "WT.peptide", "iedb_score",
+    "msw", "nmer", "nmer_id"
+  )
 )

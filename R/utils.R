@@ -1,6 +1,6 @@
 .path_config_file <- file.path(
   system.file("extdata",
-              package = "neopeptides"
+    package = "neopeptides"
   ),
   "path_config.yml"
 )
@@ -9,8 +9,8 @@ find_program <- function(program) {
   path <- Sys.which(program)
   if (all(path == "")) {
     stop("programcutable for ", paste(program, collapse = " or "),
-         " not found! Please make sure that the software is correctly installed or path is set.",
-         call. = FALSE
+      " not found! Please make sure that the software is correctly installed or path is set.",
+      call. = FALSE
     )
   }
   path[which(path != "")[1]]
