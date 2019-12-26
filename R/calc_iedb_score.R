@@ -87,12 +87,12 @@ calc_iedb_score <- function(pep,
   )
 
   if (length(blastdt) == 0) {
-    message("=> No blast output against IEDB returned!")
+    message("=> No blast output against database returned!")
     return(data.table::data.table(nmer = pep))
   }
 
   if (all(file.info(blastdt)$size == 0)) {
-    message("=> No IEDB matches found by blast!")
+    message("=> No database matches found by blast!")
     return(data.table::data.table(nmer = pep, iedb_score = 0))
   }
 
@@ -175,8 +175,8 @@ calc_iedb_score <- function(pep,
 # Internal function to Smith-Waterman align two vectors of peptides.
 SW_align <- function(col1,
                      col2,
-                     gap_open = -11,
-                     gap_extend = -1) {
+                     gap_open = -11L,
+                     gap_extend = -1L) {
   al <- Biostrings::pairwiseAlignment(col1, col2,
     substitutionMatrix = "BLOSUM62",
     gapOpening = gap_open,
@@ -190,12 +190,16 @@ SW_align <- function(col1,
   return(al)
 }
 
-modeleR <- function(als, a = 26, k = 4.86936) {
+modeleR <- function(als, a = 26, k = 4.86936, dislike = FALSE) {
   be <- -k * (a - als)
   sumexp <- sum(exp(be))
   Zk <- 1 + sumexp
   R <- sumexp / Zk
-  return(R)
+  if (dislike) {
+    return(1 - R)
+  } else {
+    return(R)
+  }
 }
 
 # makeblastdb -in Mu_iedb.fasta  -dbtype prot -out Mu_iedb.fasta -hash_index
