@@ -3,5 +3,8 @@
 export("%>%")
 export(calc_geometric_mean)
 export(calc_harmonic_mean)
+export(calc_iedb_score)
 export(set_blast_path)
+import(data.table)
+importFrom(data.table,":=")
 importFrom(magrittr,"%>%")

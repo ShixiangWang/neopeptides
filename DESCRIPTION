@@ -14,12 +14,15 @@ License: MIT + file LICENSE
 URL: https://github.com/ShixiangWang/sigminer
 BugReports: https://github.com/ShixiangWang/sigminer
 Imports: 
+    Biostrings,
+    data.table,
     magrittr,
-    purrr,
-    yaml,
-    psych,
     Peptides,
-    data.table
+    psych,
+    purrr,
+    stringr,
+    yaml
+biocViews:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
