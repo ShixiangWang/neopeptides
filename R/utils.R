@@ -30,9 +30,9 @@ add_path <- function(path) {
 }
 
 set_path <- function(path, program, store = TRUE) {
-  if (!dir.exists(path)) {
-    stop(path, " does not exist, please check!")
-  }
+  # if (!dir.exists(path)) {
+  #   stop(path, " does not exist, please check!")
+  # }
   add_path(path)
   if (store) {
     if (!file.exists(.path_config_file)) {
@@ -56,4 +56,34 @@ init_path <- function() {
   paths %>%
     purrr::reduce(base::c) %>%
     add_path()
+}
+
+# Internal function to Smith-Waterman align two vectors of peptides.
+SW_align <- function(pep1,
+                     pep2,
+                     gap_open = -11L,
+                     gap_extend = -1L) {
+  al <- Biostrings::pairwiseAlignment(pep1, pep2,
+                                      substitutionMatrix = "BLOSUM62",
+                                      gapOpening = gap_open,
+                                      gapExtension = gap_extend,
+                                      type = "local",
+                                      scoreOnly = TRUE
+  )
+
+  if (length(al) == 0) al <- as.numeric(NA)
+
+  return(al)
+}
+
+modeleR <- function(als, a = 26, k = 4.86936, dislike = FALSE) {
+  be <- -k * (a - als)
+  sumexp <- sum(exp(be))
+  Zk <- 1 + sumexp
+  R <- sumexp / Zk
+  if (dislike) {
+    return(1 - R)
+  } else {
+    return(R)
+  }
 }
