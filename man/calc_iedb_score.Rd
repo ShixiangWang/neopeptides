@@ -16,7 +16,8 @@ calc_iedb_score(
 
 \item{db}{an available database, can be one of "human" and "mouse".
 Or you can set this to specify the (fasta) database file
-to be searched instead of using standard database.}
+to be searched instead of using standard database.
+A blast database will be created if it does not exist.}
 
 \item{tmp_dir}{path for storing temp files.}
 
@@ -24,6 +25,11 @@ to be searched instead of using standard database.}
 }
 \value{
 Data table of IEDB score
+\itemize{
+\item peptide - input peptide
+\item iedb_score - IEDB score
+\item annotation - IEDB annotation info
+}
 }
 \description{
 Calculate IEDB Score for Peptides
@@ -32,5 +38,6 @@ Calculate IEDB Score for Peptides
 \donttest{
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
+calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 }
 }

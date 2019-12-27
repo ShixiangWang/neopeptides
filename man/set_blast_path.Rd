@@ -4,15 +4,11 @@
 \alias{set_blast_path}
 \title{Set Path to Blast}
 \usage{
-set_blast_path(path, store = TRUE)
+set_blast_path(path)
 }
 \arguments{
 \item{path}{a directory containing executable Blast program.
 Installing it by conda is recommended.}
-
-\item{store}{if \code{TRUE} (default), save the path to
-config file so that you don't need to set this again when
-start a new R session.}
 }
 \value{
 Nothing
@@ -21,7 +17,7 @@ Nothing
 Set Path to Blast
 }
 \examples{
-\donttest{
+\dontrun{
 set_blast_path("/Users/wsx/anaconda3/bin/")
 }
 }

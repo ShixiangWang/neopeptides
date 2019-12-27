@@ -5,19 +5,22 @@
   "path_config.yml"
 )
 
-find_program <- function(program) {
-  if (has_program(program)) {
-    program
+find_path <- function(entry) {
+  if (has_program(entry)) {
+    entry
   } else {
     # Check config file
-    configs = load_from_config(program)
-    if (is.null(configs[[program]])) {
-      stop("programcutable for ", paste(program, collapse = " or "),
-           " not found! Please make sure that the software is correctly installed and path is set.",
-           call. = FALSE
+    prog_path <- load_from_config(entry)
+    if (is.null(prog_path)) {
+      stop("Path for ", paste(entry, collapse = " or "),
+        " not found! Please make sure that the software is correctly installed and path is set.",
+        call. = FALSE
       )
     } else {
-      configs[[program]][[1]]
+      if (length(prog_path) > 1) {
+        warning("More than 2 location found, only the first will be used.")
+      }
+      prog_path[1]
     }
   }
 }
@@ -49,6 +52,7 @@ save_to_config <- function(key, path) {
   } else {
     # has content
     configs[[key]] <- path
+    yaml::write_yaml(configs, file = .path_config_file)
   }
 }
 
@@ -71,11 +75,11 @@ SW_align <- function(pep1,
                      gap_open = -11L,
                      gap_extend = -1L) {
   al <- Biostrings::pairwiseAlignment(pep1, pep2,
-                                      substitutionMatrix = "BLOSUM62",
-                                      gapOpening = gap_open,
-                                      gapExtension = gap_extend,
-                                      type = "local",
-                                      scoreOnly = TRUE
+    substitutionMatrix = "BLOSUM62",
+    gapOpening = gap_open,
+    gapExtension = gap_extend,
+    type = "local",
+    scoreOnly = TRUE
   )
 
   if (length(al) == 0) al <- as.numeric(NA)

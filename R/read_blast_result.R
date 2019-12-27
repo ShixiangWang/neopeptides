@@ -1,10 +1,10 @@
-read_blast_result = function(path) {
+read_blast_result <- function(path) {
   # TODO: read a list of files in a vector
   dt <- data.table::fread(path)
   colnames(dt) <-
     c(
       "id",
-      "IEDB_anno",
+      "anno",
       "nmer",
       "q_start",
       "q_stop",
@@ -23,5 +23,4 @@ read_blast_result = function(path) {
     .[!is.na(nmer) & !is.na(WT.peptide)]
 
   dt <- dt[nmer %like% "^[ARNDCQEGHILKMFPSTWYV]+$" & WT.peptide %like% "^[ARNDCQEGHILKMFPSTWYV]+$"]
-
 }

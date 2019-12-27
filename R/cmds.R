@@ -8,8 +8,11 @@ cmd_blastp <- function(query_file, db, out_file, threads = parallel::detectCores
   # -gapopen, -gapextend, numeric cost to a gapped alignment and
   # -outfmt, output a csv with colums, seqids for query and database seuqnence, start and end of sequence match,
   # length of overlap, number of mismatches, percent identical, expected value, bitscore
+  blastp <- find_path("blastp")
+  stopifnot(length(blastp) == 1)
+
   cmds <- paste(
-    "blastp",
+    blastp,
     "-query",
     query_file,
     "-db",
@@ -27,16 +30,17 @@ cmd_blastp <- function(query_file, db, out_file, threads = parallel::detectCores
   system(cmds)
 }
 
-cmd_blastdb <- function(x, dbtype="prot") {
+cmd_blastdb <- function(x, dbtype = "prot") {
   # Create a database name as x
-  stopifnot(has_program("makeblastdb"))
+  makeblastdb <- find_path("makeblastdb")
+  stopifnot(length(makeblastdb) == 1)
   # makeblastdb -in Mu_iedb.fasta -parse_seqids -hash_index -dbtype prot
   # -out Mu_iedb.fasta can be ignored
+  # database may has sequences with the same name, -parse_seqids is not proper here
   cmds <- paste(
-    "makeblastdb",
+    makeblastdb,
     "-in",
     x,
-    "-parse_seqids",
     "-hash_index",
     "-dbtype",
     dbtype

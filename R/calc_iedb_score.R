@@ -4,11 +4,14 @@
 #' @param db an available database, can be one of "human" and "mouse".
 #' Or you can set this to specify the (fasta) database file
 #' to be searched instead of using standard database.
+#' A blast database will be created if it does not exist.
 #' @param tmp_dir path for storing temp files.
 #' @param clean_tmp if `TRUE`, remove temp directory.
 #'
 #' @return Data table of IEDB score
-#'
+#' - peptide - input peptide
+#' - iedb_score - IEDB score
+#' - annotation - IEDB annotation info
 #' @import data.table
 #' @importFrom data.table :=
 #' @export
@@ -16,13 +19,13 @@
 #' \donttest{
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
+#' calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 #' }
 calc_iedb_score <- function(pep,
                             db = "human",
                             tmp_dir = file.path(tempdir(), "neopeptides"),
                             clean_tmp = TRUE) {
-  stopifnot(has_program("blastp"),
-            length(db) == 1)
+  stopifnot(length(db) == 1)
 
   if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
@@ -44,14 +47,11 @@ calc_iedb_score <- function(pep,
     id = names(pep)
   )
 
+  message("=> Running blastp for homology to IEDB antigens..")
   tmp_fasta <- file.path(tmp_dir, "iedb_score.fa")
   make_fasta_file(pep, tmp_fasta)
-
-  message("=> Running blastp for homology to IEDB antigens..")
   tmp_iedb_out <- file.path(tmp_dir, "blastp_iedbout.csv")
-
-  # TODO
-  db <- make_blast_db()
+  db <- make_blastp_db(db, data_type = "IEDB")
   # Run blast
   cmd_blastp(tmp_fasta, db, tmp_iedb_out)
 
@@ -63,19 +63,19 @@ calc_iedb_score <- function(pep,
 
   if (length(blastdt) == 0) {
     message("=> No blast output against database returned!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0))
+    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
   }
 
   if (all(file.info(blastdt)$size == 0)) {
     message("=> No database matches found by blast!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0))
+    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
   }
 
-  blastdt = read_blast_result(blastdt)
+  blastdt <- read_blast_result(blastdt)
 
   if (nrow(blastdt) == 0) {
     message(paste("=> No IEDB matches found with cannonical AAs, can't compute IEDB score...."))
-    return(data.table::data.table(peptide = pep, iedb_score = 0))
+    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
   }
 
   message("=> Summing IEDB local alignments...")
@@ -85,13 +85,11 @@ calc_iedb_score <- function(pep,
   blastdt[, score := SW %>% modeleR(), by = "id"]
 
   # get full IEDB ref here
-  fa <- Biostrings::readAAStringSet(db %>%
-    stringr::str_replace("bdb$", "fasta") %>%
-    stringr::str_replace("^-db\\ ", ""))
+  fa <- Biostrings::readAAStringSet(db)
   f <- fa %>% as.character()
   names(f) <- names(fa)
 
-  blastdt[, IEDB_anno := lapply(IEDB_anno, function(i) {
+  blastdt[, anno := lapply(anno, function(i) {
     mv <- f[which(stringr::str_detect(pattern = stringr::fixed(i), names(f)))]
     mv <- mv[which(stringr::str_detect(pattern = stringr::fixed(WT.peptide), mv))]
     return(paste(names(mv), WT.peptide, collapse = "|"))
@@ -100,7 +98,7 @@ calc_iedb_score <- function(pep,
   anndt <- blastdt[, .SD %>% unique(), .SDcols = c(
     "id",
     "nmer",
-    "IEDB_anno",
+    "anno",
     "score",
     "SW"
   )]
@@ -114,21 +112,23 @@ calc_iedb_score <- function(pep,
 
   anndt <- anndt[, msw := max(SW), by = "id"] %>%
     .[SW == msw] %>%
-    .[, .SD %>% unique(), .SDcols = c("id", "IEDB_anno")]
+    .[, .SD %>% unique(), .SDcols = c("id", "anno")]
 
-  # merge equally good IEDB_annos into one
-  anndt[, IEDB_anno := paste(IEDB_anno %>% unique(), collapse = "|"), by = "id"]
+  # merge equally good annos into one
+  anndt[, anno := paste(anno %>% unique(), collapse = "|"), by = "id"]
   anndt <- anndt %>% unique()
   anndt[, id := as.character(id)]
   sdt <- merge(sdt, anndt, by = "id", all.x = TRUE)
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score", "IEDB_anno")]
+  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score", "anno")]
+
+  colnames(sdt) <- c("peptide", "iedb_score", "annotation")
   return(sdt)
 }
 
 
 utils::globalVariables(
   c(
-    ".", "IEDB_anno", "SW", "WT.peptide", "score",
+    ".", "anno", "SW", "WT.peptide", "score",
     "msw", "nmer", "id"
   )
 )

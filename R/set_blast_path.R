@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' set_blast_path("/Users/wsx/anaconda3/bin/")
 #' }
 set_blast_path <- function(path) {
@@ -15,7 +15,7 @@ set_blast_path <- function(path) {
     save_to_config("blastp", file.path(path, "blastp"))
     save_to_config("makeblastdb", file.path(path, "makeblastdb"))
   } else {
-    save_to_config("blastp", file.path(path, "blastp.ext"))
-    save_to_config("makeblastdb", file.path(path, "makeblastdb.ext"))
+    save_to_config("blastp", file.path(path, "blastp.exe"))
+    save_to_config("makeblastdb", file.path(path, "makeblastdb.exe"))
   }
 }
