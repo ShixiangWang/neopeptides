@@ -10,6 +10,7 @@ calc_dissimilarity(
   k_val = 4.86936,
   a_val = 32,
   fill = NA_real_,
+  threads = parallel::detectCores(),
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
 )
@@ -35,6 +36,8 @@ See reference.}
 
 \item{fill}{a numeric value for filling default NA value when no
 blast result.}
+
+\item{threads}{number of threads to run.}
 
 \item{tmp_dir}{path for storing temp files.}
 

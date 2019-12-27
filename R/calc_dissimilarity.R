@@ -35,9 +35,12 @@ calc_dissimilarity <- function(pep,
                                k_val = 4.86936,
                                a_val = 32,
                                fill = NA_real_,
+                               threads = parallel::detectCores(),
                                tmp_dir = file.path(tempdir(), "neopeptides"),
                                clean_tmp = TRUE) {
   stopifnot(length(db) == 1)
+  old <- data.table::getDTthreads()
+  data.table::setDTthreads(threads = threads)
 
   if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
@@ -49,6 +52,7 @@ calc_dissimilarity <- function(pep,
       try(
         unlink(tmp_dir, recursive = TRUE)
       )
+      data.table::setDTthreads(old)
     })
   }
 
@@ -96,23 +100,22 @@ calc_dissimilarity <- function(pep,
   message("=> Done.")
 
   blastdt[, score := SW %>% modeleR(a = a_val, k = k_val, dislike = TRUE),
-          by = "id"]
+    by = "id"
+  ]
 
   blastdt <- blastdt[, .SD %>% unique(), .SDcols = c("id", "score")]
   sdt[, id := as.character(id)]
   blastdt[, id := as.character(id)]
 
   sdt <- merge(sdt, blastdt, by = "id", all.x = TRUE)
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("id", "pep", "score")][, c("pep", "score"), with = FALSE]
+  sdt <- sdt[order(as.integer(id)),
+    .SD %>% unique(),
+    .SDcols = c("id", "pep", "score")
+  ][
+    , c("pep", "score"),
+    with = FALSE
+  ]
 
   colnames(sdt) <- c("peptide", "dissimilarity")
   return(sdt)
 }
-
-
-# utils::globalVariables(
-#   c(
-#     ".", "anno", "SW", "WT.peptide", "score",
-#     "msw", "nmer", "id"
-#   )
-# )

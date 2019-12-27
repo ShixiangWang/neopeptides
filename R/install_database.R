@@ -88,7 +88,7 @@ install_database <- function(db_path = "~/.neopeptide/db",
     key <- paste0(
       "db_", names(database)[i], "_",
       ifelse(grepl("iedb", basename(local_fa_file[i])),
-             "iedb", "proteome"
+        "iedb", "proteome"
       )
     )
     save_to_config(key, local_fa_file[i])

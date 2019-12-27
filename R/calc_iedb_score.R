@@ -7,6 +7,7 @@
 #' A blast database will be created if it does not exist.
 #' @param fill a numeric value for filling default NA value when no
 #' blast result.
+#' @param threads number of threads to run.
 #' @param tmp_dir path for storing temp files.
 #' @param clean_tmp if `TRUE`, remove temp directory.
 #'
@@ -27,9 +28,12 @@
 calc_iedb_score <- function(pep,
                             db = "human",
                             fill = NA_real_,
+                            threads = parallel::detectCores(),
                             tmp_dir = file.path(tempdir(), "neopeptides"),
                             clean_tmp = TRUE) {
   stopifnot(length(db) == 1)
+  old <- data.table::getDTthreads()
+  data.table::setDTthreads(threads = threads)
 
   if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
@@ -41,6 +45,7 @@ calc_iedb_score <- function(pep,
       try(
         unlink(tmp_dir, recursive = TRUE)
       )
+      data.table::setDTthreads(old)
     })
   }
 
@@ -57,7 +62,7 @@ calc_iedb_score <- function(pep,
   tmp_iedb_out <- file.path(tmp_dir, "blastp_iedbout.csv")
   db <- make_blastp_db(db, data_type = "IEDB")
   # Run blast
-  cmd_blastp(tmp_fasta, db, tmp_iedb_out)
+  cmd_blastp(tmp_fasta, db, tmp_iedb_out, threads = threads)
 
   blastdt <- list.files(
     path = tmp_dir,
@@ -122,7 +127,12 @@ calc_iedb_score <- function(pep,
   anndt <- anndt %>% unique()
   anndt[, id := as.character(id)]
   sdt <- merge(sdt, anndt, by = "id", all.x = TRUE)
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("id", "pep", "score", "anno")][, c("pep", "score", "anno"), with = FALSE]
+  sdt <- sdt[order(as.integer(id)), .SD %>% unique(),
+    .SDcols = c("id", "pep", "score", "anno")
+  ][
+    , c("pep", "score", "anno"),
+    with = FALSE
+  ]
 
   colnames(sdt) <- c("peptide", "iedb_score", "annotation")
   return(sdt)

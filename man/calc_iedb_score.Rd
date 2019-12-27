@@ -8,6 +8,7 @@ calc_iedb_score(
   pep,
   db = "human",
   fill = NA_real_,
+  threads = parallel::detectCores(),
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
 )
@@ -22,6 +23,8 @@ A blast database will be created if it does not exist.}
 
 \item{fill}{a numeric value for filling default NA value when no
 blast result.}
+
+\item{threads}{number of threads to run.}
 
 \item{tmp_dir}{path for storing temp files.}
 

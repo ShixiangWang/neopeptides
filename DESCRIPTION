@@ -13,16 +13,19 @@ Description: Includes functions to calculate and explore several
 License: MIT + file LICENSE
 URL: https://github.com/ShixiangWang/sigminer
 BugReports: https://github.com/ShixiangWang/sigminer
+Depends: 
+    R (>= 3.5)
 Imports: 
     Biostrings,
     data.table,
     magrittr,
+    parallel,
     Peptides,
     psych,
     purrr,
+    R.utils,
     stringr,
-    yaml,
-    R.utils
+    yaml
 biocViews:
 Encoding: UTF-8
 LazyData: true
