@@ -7,6 +7,7 @@
 calc_iedb_score(
   pep,
   db = "human",
+  fill = NA_real_,
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
 )
@@ -19,12 +20,15 @@ Or you can set this to specify the (fasta) database file
 to be searched instead of using standard database.
 A blast database will be created if it does not exist.}
 
+\item{fill}{a numeric value for filling default NA value when no
+blast result.}
+
 \item{tmp_dir}{path for storing temp files.}
 
 \item{clean_tmp}{if \code{TRUE}, remove temp directory.}
 }
 \value{
-Data table of IEDB score
+Data table of IEDB scores.
 \itemize{
 \item peptide - input peptide
 \item iedb_score - IEDB score
@@ -36,6 +40,7 @@ Calculate IEDB Score for Peptides
 }
 \examples{
 \donttest{
+calc_iedb_score("AAAAAAAAA")
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
 calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))

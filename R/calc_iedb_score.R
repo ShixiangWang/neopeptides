@@ -5,10 +5,12 @@
 #' Or you can set this to specify the (fasta) database file
 #' to be searched instead of using standard database.
 #' A blast database will be created if it does not exist.
+#' @param fill a numeric value for filling default NA value when no
+#' blast result.
 #' @param tmp_dir path for storing temp files.
 #' @param clean_tmp if `TRUE`, remove temp directory.
 #'
-#' @return Data table of IEDB score
+#' @return Data table of IEDB scores.
 #' - peptide - input peptide
 #' - iedb_score - IEDB score
 #' - annotation - IEDB annotation info
@@ -17,12 +19,14 @@
 #' @export
 #' @examples
 #' \donttest{
+#' calc_iedb_score("AAAAAAAAA")
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
 #' calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 #' }
 calc_iedb_score <- function(pep,
                             db = "human",
+                            fill = NA_real_,
                             tmp_dir = file.path(tempdir(), "neopeptides"),
                             clean_tmp = TRUE) {
   stopifnot(length(db) == 1)
@@ -63,19 +67,19 @@ calc_iedb_score <- function(pep,
 
   if (length(blastdt) == 0) {
     message("=> No blast output against database returned!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    return(data.table::data.table(peptide = pep, iedb_score = fill, annotation = NA_character_))
   }
 
   if (all(file.info(blastdt)$size == 0)) {
     message("=> No database matches found by blast!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    return(data.table::data.table(peptide = pep, iedb_score = fill, annotation = NA_character_))
   }
 
   blastdt <- read_blast_result(blastdt)
 
   if (nrow(blastdt) == 0) {
     message(paste("=> No IEDB matches found with cannonical AAs, can't compute IEDB score...."))
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    return(data.table::data.table(peptide = pep, iedb_score = fill, annotation = NA_character_))
   }
 
   message("=> Summing IEDB local alignments...")

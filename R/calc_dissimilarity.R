@@ -1,30 +1,42 @@
 #' Calculate Dissimilarity Value to Reference Proteome for Peptides
 #'
-#' @param pep a vector of peptides.
-#' @param db an available database, can be one of "human" and "mouse".
-#' Or you can set this to specify the (fasta) database file
-#' to be searched instead of using standard database.
-#' A blast database will be created if it does not exist.
-#' @param tmp_dir path for storing temp files.
-#' @param clean_tmp if `TRUE`, remove temp directory.
+#' @inheritParams calc_iedb_score
+#' @param k_val numeric. Steepness of sigmoidal curve at k.
+#' Default 4.86936, the value used in the analysis of Van Allen,
+#' Snyder, Rizvi, Riaz, and Hellmann datasets. See reference.
+#' @param a_val numeric. Optionally can be "mean" to use mean alignment
+#' for nmers passed. Horizontal displacement of partition function.
+#' Default is 32, based on max_SW of 75 million 8-15mers from the
+#' five clinical datasets against human, if using max_SW, use 52.
+#' This value may not be meaningful for murine alignment so use with care.
+#' See reference.
 #'
-#' @return Data table of IEDB score
+#' @return Data table of dissimilarity values (to the non-mutated proteome).
 #' - peptide - input peptide
-#' - iedb_score - IEDB score
-#' - annotation - IEDB annotation info
+#' - dissimilarity - dissimilarity value
+#' @references Richman LP, Vonderheide RH, and Rech AJ.
+#' "Neoantigen dissimilarity to the self-proteome predicts immunogenicity
+#' and response to immune checkpoint blockade." Cell Systems 9, 375-382.E4, (2019).
+#'
 #' @import data.table
 #' @importFrom data.table :=
 #' @export
 #' @examples
 #' \donttest{
-#' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
-#' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
-#' calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
+#' calc_dissimilarity("AAAAAAAAA")
+#' calc_dissimilarity("MRLVDRRWA")
+#' calc_dissimilarity("VRLVDRRWA")
+#' calc_dissimilarity("MTEYKLVVVGAGDVGKSALTI")
+#' calc_dissimilarity("MTEYKLVVVGAGDVGKSALTI", db = "mouse")
+#' calc_dissimilarity(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 #' }
-calc_iedb_score <- function(pep,
-                            db = "human",
-                            tmp_dir = file.path(tempdir(), "neopeptides"),
-                            clean_tmp = TRUE) {
+calc_dissimilarity <- function(pep,
+                               db = "human",
+                               k_val = 4.86936,
+                               a_val = 32,
+                               fill = NA_real_,
+                               tmp_dir = file.path(tempdir(), "neopeptides"),
+                               clean_tmp = TRUE) {
   stopifnot(length(db) == 1)
 
   if (!dir.exists(tmp_dir)) {
@@ -47,61 +59,44 @@ calc_iedb_score <- function(pep,
     id = names(pep)
   )
 
-  message("=> Running blastp for homology to IEDB antigens..")
-  tmp_fasta <- file.path(tmp_dir, "iedb_score.fa")
+  message("=> Running blastp for homology to self antigens..")
+  tmp_fasta <- file.path(tmp_dir, "dissimilarity.fa")
   make_fasta_file(pep, tmp_fasta)
-  tmp_iedb_out <- file.path(tmp_dir, "blastp_iedbout.csv")
-  db <- make_blastp_db(db, data_type = "IEDB")
+  tmp_iedb_out <- file.path(tmp_dir, "blastp_self_out.csv")
+  db <- make_blastp_db(db, data_type = "Proteome")
   # Run blast
   cmd_blastp(tmp_fasta, db, tmp_iedb_out)
 
   blastdt <- list.files(
     path = tmp_dir,
-    pattern = "blastp_iedbout\\.csv",
+    pattern = "blastp_self_out\\.csv",
     full.names = TRUE
   )
 
   if (length(blastdt) == 0) {
-    message("=> No blast output against database returned!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    message("=> No blast output against self-proteome returned!")
+    return(data.table::data.table(peptide = pep, dissimilarity = fill))
   }
 
   if (all(file.info(blastdt)$size == 0)) {
-    message("=> No database matches found by blast!")
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    message("=> No self-proteome matches found by blast!")
+    return(data.table::data.table(peptide = pep, dissimilarity = fill))
   }
 
   blastdt <- read_blast_result(blastdt)
 
   if (nrow(blastdt) == 0) {
-    message(paste("=> No IEDB matches found with cannonical AAs, can't compute IEDB score...."))
-    return(data.table::data.table(peptide = pep, iedb_score = 0, annotation = NA_character_))
+    message(paste("=> No self-proteome matches found with cannonical AAs, can't compute dissimilarity...."))
+    return(data.table::data.table(peptide = pep, dissimilarity = fill))
   }
 
-  message("=> Summing IEDB local alignments...")
+  # May memory intense
+  message("=> Summing local alignments...")
   blastdt[, SW := SW_align(nmer, WT.peptide)]
   message("=> Done.")
 
-  blastdt[, score := SW %>% modeleR(), by = "id"]
-
-  # get full IEDB ref here
-  fa <- Biostrings::readAAStringSet(db)
-  f <- fa %>% as.character()
-  names(f) <- names(fa)
-
-  blastdt[, anno := lapply(anno, function(i) {
-    mv <- f[which(stringr::str_detect(pattern = stringr::fixed(i), names(f)))]
-    mv <- mv[which(stringr::str_detect(pattern = stringr::fixed(WT.peptide), mv))]
-    return(paste(names(mv), WT.peptide, collapse = "|"))
-  }), by = 1:nrow(blastdt)]
-
-  anndt <- blastdt[, .SD %>% unique(), .SDcols = c(
-    "id",
-    "nmer",
-    "anno",
-    "score",
-    "SW"
-  )]
+  blastdt[, score := SW %>% modeleR(a = a_val, k = k_val, dislike = TRUE),
+          by = "id"]
 
   blastdt <- blastdt[, .SD %>% unique(), .SDcols = c("id", "score")]
   sdt[, id := as.character(id)]
@@ -109,26 +104,16 @@ calc_iedb_score <- function(pep,
 
   sdt <- merge(sdt, blastdt, by = "id")
   sdt %>% data.table::setnames("pep", "nmer")
+  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score")]
 
-  anndt <- anndt[, msw := max(SW), by = "id"] %>%
-    .[SW == msw] %>%
-    .[, .SD %>% unique(), .SDcols = c("id", "anno")]
-
-  # merge equally good annos into one
-  anndt[, anno := paste(anno %>% unique(), collapse = "|"), by = "id"]
-  anndt <- anndt %>% unique()
-  anndt[, id := as.character(id)]
-  sdt <- merge(sdt, anndt, by = "id", all.x = TRUE)
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score", "anno")]
-
-  colnames(sdt) <- c("peptide", "iedb_score", "annotation")
+  colnames(sdt) <- c("peptide", "dissimilarity")
   return(sdt)
 }
 
 
-utils::globalVariables(
-  c(
-    ".", "anno", "SW", "WT.peptide", "score",
-    "msw", "nmer", "id"
-  )
-)
+# utils::globalVariables(
+#   c(
+#     ".", "anno", "SW", "WT.peptide", "score",
+#     "msw", "nmer", "id"
+#   )
+# )
