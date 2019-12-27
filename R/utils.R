@@ -29,34 +29,39 @@ add_path <- function(path) {
   Sys.setenv(PATH = paste(PATH, collapse = ":"))
 }
 
-set_path <- function(path, program, store = TRUE) {
-  # if (!dir.exists(path)) {
-  #   stop(path, " does not exist, please check!")
-  # }
-  add_path(path)
-  if (store) {
-    if (!file.exists(.path_config_file)) {
-      file.create(.path_config_file)
-    }
-    new_to_add <- list(path)
-    names(new_to_add) <- program
-    configs <- yaml::yaml.load_file(.path_config_file)
-    if (is.null(configs)) {
-      # has no content
-      yaml::write_yaml(new_to_add, file = .path_config_file)
-    } else {
-      # has content
-      configs[[program]] <- path
-    }
+# Save key, path pair to config file
+save_to_config <- function(key, path) {
+  if (!file.exists(.path_config_file)) {
+    file.create(.path_config_file)
+  }
+  new_to_add <- list(path)
+  names(new_to_add) <- key
+  configs <- yaml::yaml.load_file(.path_config_file)
+  if (is.null(configs)) {
+    # has no content
+    yaml::write_yaml(new_to_add, file = .path_config_file)
+  } else {
+    # has content
+    configs[[key]] <- path
   }
 }
 
-init_path <- function() {
-  paths <- yaml::yaml.load_file(.path_config_file)
-  paths %>%
-    purrr::reduce(base::c) %>%
-    add_path()
+# load path from config file by key
+load_from_config <- function(key) {
+  configs <- yaml::yaml.load_file(.path_config_file)
+  if (!key %in% names(configs)) {
+    stop("Key ", key, " not found in config file ", .path_config_file)
+  } else {
+    configs[[key]]
+  }
 }
+
+# init_path <- function() {
+#   paths <- yaml::yaml.load_file(.path_config_file)
+#   paths %>%
+#     purrr::reduce(base::c) %>%
+#     add_path()
+# }
 
 # Internal function to Smith-Waterman align two vectors of peptides.
 SW_align <- function(pep1,

@@ -21,7 +21,8 @@ Imports:
     psych,
     purrr,
     stringr,
-    yaml
+    yaml,
+    R.utils
 biocViews:
 Encoding: UTF-8
 LazyData: true
