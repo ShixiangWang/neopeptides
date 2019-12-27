@@ -21,3 +21,6 @@ Set Path to Blast
 set_blast_path("/Users/wsx/anaconda3/bin/")
 }
 }
+\seealso{
+\link{find_path}, \link{install_database}
+}

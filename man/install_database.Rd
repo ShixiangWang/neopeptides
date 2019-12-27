@@ -32,3 +32,6 @@ Install IEDB and Proteome Reference Database
 install_database()
 }
 }
+\seealso{
+\link{set_blast_path}, \link{calc_iedb_score}, \link{calc_dissimilarity}
+}

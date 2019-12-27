@@ -49,3 +49,7 @@ calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
 calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 }
 }
+\seealso{
+\link{set_blast_path} for setting blast path, \link{install_database}
+for installing database.
+}

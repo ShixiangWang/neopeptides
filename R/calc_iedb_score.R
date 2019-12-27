@@ -25,6 +25,8 @@
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")
 #' calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 #' }
+#' @seealso [set_blast_path] for setting blast path, [install_database]
+#' for installing database.
 calc_iedb_score <- function(pep,
                             db = "human",
                             fill = NA_real_,

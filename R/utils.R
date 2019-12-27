@@ -11,6 +11,16 @@
   "config.yml"
 )
 
+#' Find Entry Path from Environment Variable or Config file
+#'
+#' Firstly environment variable PATH will be searched, if not
+#' found, configure file then will be used to search the entry.
+#'
+#' @param entry a program or blast database.
+#' @return a path.
+#' @export
+#' @seealso [set_blast_path] for setting blast path, [install_database]
+#' for installing database.
 find_path <- function(entry) {
   if (has_program(entry)) {
     entry

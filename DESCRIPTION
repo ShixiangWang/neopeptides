@@ -11,8 +11,8 @@ Description: Includes functions to calculate and explore several
     property indices for neopeptides, which are abnormal peptides
     generated from genome.
 License: MIT + file LICENSE
-URL: https://github.com/ShixiangWang/sigminer
-BugReports: https://github.com/ShixiangWang/sigminer
+URL: https://github.com/ShixiangWang/neopeptides
+BugReports: https://github.com/ShixiangWang/neopeptides/issues
 Depends: 
     R (>= 3.5)
 Imports: 

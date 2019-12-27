@@ -30,6 +30,8 @@
 #' calc_dissimilarity("MTEYKLVVVGAGDVGKSALTI", db = "mouse")
 #' calc_dissimilarity(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
 #' }
+#' @seealso [set_blast_path] for setting blast path, [install_database]
+#' for installing database.
 calc_dissimilarity <- function(pep,
                                db = "human",
                                k_val = 4.86936,

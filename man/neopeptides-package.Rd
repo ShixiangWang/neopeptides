@@ -13,8 +13,8 @@ Includes functions to calculate and explore several
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ShixiangWang/sigminer}
-  \item Report bugs at \url{https://github.com/ShixiangWang/sigminer}
+  \item \url{https://github.com/ShixiangWang/neopeptides}
+  \item Report bugs at \url{https://github.com/ShixiangWang/neopeptides/issues}
 }
 
 }

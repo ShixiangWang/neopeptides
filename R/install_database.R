@@ -13,6 +13,7 @@
 #' # Default all databases will be downloaded and installed.
 #' install_database()
 #' }
+#' @seealso [set_blast_path], [calc_iedb_score], [calc_dissimilarity]
 install_database <- function(db_path = "~/.neopeptide/db",
                              force = FALSE,
                              species = c("human", "mouse"),

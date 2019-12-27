@@ -10,6 +10,7 @@
 #' \dontrun{
 #' set_blast_path("/Users/wsx/anaconda3/bin/")
 #' }
+#' @seealso [find_path], [install_database]
 set_blast_path <- function(path) {
   if (.Platform$OS.type == "unix") {
     save_to_config("blastp", file.path(path, "blastp"))
