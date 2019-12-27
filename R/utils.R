@@ -1,9 +1,11 @@
-.path_config_file <- file.path(
-  system.file("extdata",
-    package = "neopeptides"
-  ),
-  "path_config.yml"
-)
+# Annoying ERROR: hard-coded installation path
+# .path_config_file <- file.path(
+#   system.file("extdata",
+#     package = "neopeptides"
+#   ),
+#   "path_config.yml"
+# )
+.path_config_file <- file.path(Sys.getenv("HOME", unset = "~/"), ".neopeptide.yml")
 
 find_path <- function(entry) {
   if (has_program(entry)) {
