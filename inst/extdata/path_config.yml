@@ -1,6 +1,6 @@
 blastp: /Users/wsx/anaconda3/bin//blastp
 makeblastdb: /Users/wsx/anaconda3/bin//makeblastdb
 db_mouse_iedb: ~/.neopeptide/db/Mu_iedb.fasta
-db_human_genome: ~/.neopeptide/db/Homo_sapiens.GRCh38.pep.all.fa
-db_mouse_genome: ~/.neopeptide/db/Mus_musculus.GRCm38.pep.all.fa
+db_human_proteome: ~/.neopeptide/db/Homo_sapiens.GRCh38.pep.all.fa
+db_mouse_proteome: ~/.neopeptide/db/Mus_musculus.GRCm38.pep.all.fa
 db_human_iedb: ~/.neopeptide/db/iedb.fasta

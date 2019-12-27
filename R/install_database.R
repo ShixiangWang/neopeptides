@@ -1,29 +1,29 @@
 install_database <- function(db_path = "~/.neopeptide/db",
                              force = FALSE,
                              species = c("human", "mouse"),
-                             data_type = c("IEDB", "Genome")) {
+                             data_type = c("IEDB", "Proteome")) {
   species <- match.arg(species, choices = c("human", "mouse"), several.ok = TRUE)
-  data_type <- match.arg(data_type, choices = c("IEDB", "Genome"), several.ok = TRUE)
+  data_type <- match.arg(data_type, choices = c("IEDB", "Penome"), several.ok = TRUE)
 
   if (!dir.exists(db_path)) {
     dir.create(db_path, recursive = TRUE)
   }
 
-  genome_human <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Homo_sapiens.GRCh38.pep.all.fa.gz"
-  genome_mouse <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Mus_musculus.GRCm38.pep.all.fa.gz"
+  proteome_human <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Homo_sapiens.GRCh38.pep.all.fa.gz"
+  proteome_mouse <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Mus_musculus.GRCm38.pep.all.fa.gz"
   iedb_human <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/iedb.fasta.gz"
   iedb_mouse <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Mu_iedb.fasta.gz"
 
-  genome <- c(genome_human, genome_mouse)
+  proteome <- c(proteome_human, proteome_mouse)
   iedb <- c(iedb_human, iedb_mouse)
-  names(genome) <- names(iedb) <- c("human", "mouse")
+  names(proteome) <- names(iedb) <- c("human", "mouse")
 
   database <- c()
   if ("IEDB" %in% data_type) {
     database <- c(database, iedb[species])
   }
-  if ("Genome" %in% data_type) {
-    database <- c(database, genome[species])
+  if ("Proteome" %in% data_type) {
+    database <- c(database, proteome[species])
   }
 
   # Download database
@@ -72,7 +72,7 @@ install_database <- function(db_path = "~/.neopeptide/db",
       key <- paste0(
         "db_", names(database)[i], "_",
         ifelse(grepl("iedb", basename(local_fa_file[i])),
-          "iedb", "genome"
+          "iedb", "proteome"
         )
       )
       save_to_config(key, local_fa_file[i])
