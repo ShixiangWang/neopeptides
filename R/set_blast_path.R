@@ -2,9 +2,6 @@
 #'
 #' @param path a directory containing executable Blast program.
 #' Installing it by conda is recommended.
-#' @param store if `TRUE` (default), save the path to
-#' config file so that you don't need to set this again when
-#' start a new R session.
 #'
 #' @return Nothing
 #' @export
@@ -13,6 +10,12 @@
 #' \donttest{
 #' set_blast_path("/Users/wsx/anaconda3/bin/")
 #' }
-set_blast_path <- function(path, store = TRUE) {
-  set_path(path, program = "blast", store = store)
+set_blast_path <- function(path) {
+  if (.Platform$OS.type == "unix") {
+    save_to_config("blastp", file.path(path, "blastp"))
+    save_to_config("makeblastdb", file.path(path, "makeblastdb"))
+  } else {
+    save_to_config("blastp", file.path(path, "blastp.ext"))
+    save_to_config("makeblastdb", file.path(path, "makeblastdb.ext"))
+  }
 }

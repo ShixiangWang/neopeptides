@@ -6,14 +6,20 @@
 )
 
 find_program <- function(program) {
-  path <- Sys.which(program)
-  if (all(path == "")) {
-    stop("programcutable for ", paste(program, collapse = " or "),
-      " not found! Please make sure that the software is correctly installed or path is set.",
-      call. = FALSE
-    )
+  if (has_program(program)) {
+    program
+  } else {
+    # Check config file
+    configs = load_from_config(program)
+    if (is.null(configs[[program]])) {
+      stop("programcutable for ", paste(program, collapse = " or "),
+           " not found! Please make sure that the software is correctly installed and path is set.",
+           call. = FALSE
+      )
+    } else {
+      configs[[program]][[1]]
+    }
   }
-  path[which(path != "")[1]]
 }
 
 has_program <- function(program) {
@@ -48,6 +54,9 @@ save_to_config <- function(key, path) {
 
 # load path from config file by key
 load_from_config <- function(key) {
+  if (!file.exists(.path_config_file)) {
+    stop("Please set your program path, see ?set_blast_path or similar functions.", call. = FALSE)
+  }
   configs <- yaml::yaml.load_file(.path_config_file)
   if (!key %in% names(configs)) {
     stop("Key ", key, " not found in config file ", .path_config_file)
@@ -55,13 +64,6 @@ load_from_config <- function(key) {
     configs[[key]]
   }
 }
-
-# init_path <- function() {
-#   paths <- yaml::yaml.load_file(.path_config_file)
-#   paths %>%
-#     purrr::reduce(base::c) %>%
-#     add_path()
-# }
 
 # Internal function to Smith-Waterman align two vectors of peptides.
 SW_align <- function(pep1,
