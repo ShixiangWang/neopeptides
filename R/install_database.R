@@ -68,14 +68,14 @@ install_database <- function(db_path = "~/.neopeptide/db",
       # Call makeblastdb
       message("=> Making blastp database ", local_fa_file[i], "...")
       cmd_blastdb(local_fa_file[i])
-      # Store database path to config file
-      key <- paste0(
-        "db_", names(database)[i], "_",
-        ifelse(grepl("iedb", basename(local_fa_file[i])),
-          "iedb", "proteome"
-        )
-      )
-      save_to_config(key, local_fa_file[i])
     }
+    # Store database path to config file
+    key <- paste0(
+      "db_", names(database)[i], "_",
+      ifelse(grepl("iedb", basename(local_fa_file[i])),
+             "iedb", "proteome"
+      )
+    )
+    save_to_config(key, local_fa_file[i])
   }
 }
