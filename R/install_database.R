@@ -1,9 +1,24 @@
+#' Install IEDB and Proteome Reference Database
+#'
+#' @param db_path a path to store the databases.
+#' @param force if `TRUE`, force to re-download and re-install.
+#' @param species can be 'human' and 'mouse'. Default select them all.
+#' @param data_type can be 'IEDB' and 'Proteome'. Default select them all.
+#'
+#' @return Nothing.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Default all databases will be downloaded and installed.
+#' install_database()
+#' }
 install_database <- function(db_path = "~/.neopeptide/db",
                              force = FALSE,
                              species = c("human", "mouse"),
                              data_type = c("IEDB", "Proteome")) {
   species <- match.arg(species, choices = c("human", "mouse"), several.ok = TRUE)
-  data_type <- match.arg(data_type, choices = c("IEDB", "Penome"), several.ok = TRUE)
+  data_type <- match.arg(data_type, choices = c("IEDB", "Proteome"), several.ok = TRUE)
 
   if (!dir.exists(db_path)) {
     dir.create(db_path, recursive = TRUE)

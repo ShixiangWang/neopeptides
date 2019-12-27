@@ -5,7 +5,9 @@
 #   ),
 #   "path_config.yml"
 # )
-.path_config_file <- file.path(Sys.getenv("HOME", unset = "~/"), ".neopeptide.yml")
+.path_config_file <- file.path(Sys.getenv("HOME", unset = "~/"),
+                               ".neopeptide",
+                               "config.yml")
 
 find_path <- function(entry) {
   if (has_program(entry)) {
