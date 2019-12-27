@@ -102,9 +102,8 @@ calc_dissimilarity <- function(pep,
   sdt[, id := as.character(id)]
   blastdt[, id := as.character(id)]
 
-  sdt <- merge(sdt, blastdt, by = "id")
-  sdt %>% data.table::setnames("pep", "nmer")
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score")]
+  sdt <- merge(sdt, blastdt, by = "id", all.x = TRUE)
+  sdt <- sdt[, .SD %>% unique(), .SDcols = c("id", "pep", "score")][, c("pep", "score"), with = FALSE]
 
   colnames(sdt) <- c("peptide", "dissimilarity")
   return(sdt)

@@ -45,7 +45,9 @@ add_path <- function(path) {
 # Save key, path pair to config file
 save_to_config <- function(key, path) {
   if (!file.exists(.path_config_file)) {
-    dir.create(dirname(.path_config_file), recursive = TRUE)
+    if (!dir.exists(dirname(.path_config_file))) {
+      dir.create(dirname(.path_config_file), recursive = TRUE)
+    }
     file.create(.path_config_file)
   }
   new_to_add <- list(path)

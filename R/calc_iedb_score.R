@@ -111,8 +111,7 @@ calc_iedb_score <- function(pep,
   sdt[, id := as.character(id)]
   blastdt[, id := as.character(id)]
 
-  sdt <- merge(sdt, blastdt, by = "id")
-  sdt %>% data.table::setnames("pep", "nmer")
+  sdt <- merge(sdt, blastdt, by = "id", all.x = TRUE)
 
   anndt <- anndt[, msw := max(SW), by = "id"] %>%
     .[SW == msw] %>%
@@ -123,7 +122,7 @@ calc_iedb_score <- function(pep,
   anndt <- anndt %>% unique()
   anndt[, id := as.character(id)]
   sdt <- merge(sdt, anndt, by = "id", all.x = TRUE)
-  sdt <- sdt[, .SD %>% unique(), .SDcols = c("nmer", "score", "anno")]
+  sdt <- sdt[, .SD %>% unique(), .SDcols = c("id", "pep", "score", "anno")][, c("pep", "score", "anno"), with = FALSE]
 
   colnames(sdt) <- c("peptide", "iedb_score", "annotation")
   return(sdt)
