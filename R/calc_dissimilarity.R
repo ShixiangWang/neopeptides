@@ -118,6 +118,10 @@ calc_dissimilarity <- function(pep,
     with = FALSE
   ]
 
+  if (!is.na(fill)) {
+    sdt$score[is.na(sdt$score)] <- fill
+  }
+
   colnames(sdt) <- c("peptide", "dissimilarity")
   return(sdt)
 }

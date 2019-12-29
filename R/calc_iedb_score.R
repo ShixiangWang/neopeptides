@@ -136,6 +136,10 @@ calc_iedb_score <- function(pep,
     with = FALSE
   ]
 
+  if (!is.na(fill)) {
+    sdt$score[is.na(sdt$score)] <- fill
+  }
+
   colnames(sdt) <- c("peptide", "iedb_score", "annotation")
   return(sdt)
 }
