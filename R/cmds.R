@@ -17,6 +17,7 @@ cmd_blastp <- function(query_file, db, out_file, threads = parallel::detectCores
     query_file,
     "-db",
     db,
+    "-task blastp-short",
     "-evalue 100000000",
     "-matrix BLOSUM62",
     "-gapopen 11",
