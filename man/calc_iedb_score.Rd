@@ -8,6 +8,7 @@ calc_iedb_score(
   pep,
   db = "human",
   fill = NA_real_,
+  use_blastp_short = TRUE,
   threads = parallel::detectCores(),
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
@@ -23,6 +24,10 @@ A blast database will be created if it does not exist.}
 
 \item{fill}{a numeric value for filling default NA value when no
 blast result.}
+
+\item{use_blastp_short, }{default is \code{TRUE}, optimize blast for <30 AA by
+setting \code{blastp} flag \code{-task} as 'blastp-short'. If \code{FALSE},
+use default task mode, i.e. 'blastp'.}
 
 \item{threads}{number of threads to run.}
 

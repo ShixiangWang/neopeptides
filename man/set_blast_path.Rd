@@ -14,7 +14,10 @@ Installing it by conda is recommended.}
 Nothing
 }
 \description{
-Set Path to Blast
+At default, configure file is '~/.neopeptide/config.yml', you
+can set by \code{options(neopeptides.config="new_path.yml")}.
+Please remember, if you change the configure file, you have
+to set it per R session.
 }
 \examples{
 \dontrun{

@@ -1,5 +1,10 @@
 #' Install IEDB and Proteome Reference Database
 #'
+#' At default, configure file is '~/.neopeptide/config.yml', you
+#' can set by `options(neopeptides.config="new_path.yml")`.
+#' Please remember, if you change the configure file, you have
+#' to set it per R session.
+#'
 #' @param db_path a path to store the databases.
 #' @param force if `TRUE`, force to re-download and re-install.
 #' @param species can be 'human' and 'mouse'. Default select them all.

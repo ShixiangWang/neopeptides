@@ -5,10 +5,13 @@
 #   ),
 #   "path_config.yml"
 # )
-.path_config_file <- file.path(
-  Sys.getenv("HOME", unset = "~/"),
-  ".neopeptide",
-  "config.yml"
+.path_config_file <- getOption(
+  "neopeptides.config",
+  default = file.path(
+    Sys.getenv("HOME", unset = "~/"),
+    ".neopeptide",
+    "config.yml"
+  )
 )
 
 #' Find Entry Path from Environment Variable or Config file
@@ -57,6 +60,7 @@ add_path <- function(path) {
 # Save key, path pair to config file
 save_to_config <- function(key, path) {
   if (!file.exists(.path_config_file)) {
+    message("=> Config file ", .path_config_file, " does not exist, creating it...")
     if (!dir.exists(dirname(.path_config_file))) {
       dir.create(dirname(.path_config_file), recursive = TRUE)
     }
@@ -65,6 +69,7 @@ save_to_config <- function(key, path) {
   new_to_add <- list(path)
   names(new_to_add) <- key
   configs <- yaml::yaml.load_file(.path_config_file)
+  message(sprintf("=> Saving %s:%s to config file %s", key, path, .path_config_file))
   if (is.null(configs)) {
     # has no content
     yaml::write_yaml(new_to_add, file = .path_config_file)
@@ -78,11 +83,19 @@ save_to_config <- function(key, path) {
 # load path from config file by key
 load_from_config <- function(key) {
   if (!file.exists(.path_config_file)) {
-    stop("Please set your program path, see ?set_blast_path or similar functions.", call. = FALSE)
+    msg <- paste(
+      sprintf(
+        "Config file %s does not exist or permission denied, run the following command to chek!",
+        .path_config_file
+      ),
+      "\tyaml::yaml.load_file(neopeptides:::.path_config_file)",
+      sep = "\n"
+    )
+    stop(msg, call. = FALSE)
   }
   configs <- yaml::yaml.load_file(.path_config_file)
   if (!key %in% names(configs)) {
-    stop("Key ", key, " not found in config file ", .path_config_file)
+    stop("Key '", key, "' not found in config file ", .path_config_file)
   } else {
     configs[[key]]
   }

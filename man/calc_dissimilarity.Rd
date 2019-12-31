@@ -10,6 +10,7 @@ calc_dissimilarity(
   k_val = 4.86936,
   a_val = 32,
   fill = NA_real_,
+  use_blastp_short = TRUE,
   threads = parallel::detectCores(),
   tmp_dir = file.path(tempdir(), "neopeptides"),
   clean_tmp = TRUE
@@ -36,6 +37,10 @@ See reference.}
 
 \item{fill}{a numeric value for filling default NA value when no
 blast result.}
+
+\item{use_blastp_short}{default is \code{TRUE}, optimize blast for <30 AA by
+setting \code{blastp} flag \code{-task} as 'blastp-short'. If \code{FALSE},
+use default task mode, i.e. 'blastp'.}
 
 \item{threads}{number of threads to run.}
 

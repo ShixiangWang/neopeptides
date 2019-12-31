@@ -1,5 +1,10 @@
 #' Set Path to Blast
 #'
+#' At default, configure file is '~/.neopeptide/config.yml', you
+#' can set by `options(neopeptides.config="new_path.yml")`.
+#' Please remember, if you change the configure file, you have
+#' to set it per R session.
+#'
 #' @param path a directory containing executable Blast program.
 #' Installing it by conda is recommended.
 #'
