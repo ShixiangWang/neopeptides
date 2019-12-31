@@ -1,4 +1,4 @@
-cmd_blastp <- function(query_file, db, out_file, threads = parallel::detectCores()) {
+cmd_blastp <- function(query_file, db, out_file, short_task = FALSE, threads = parallel::detectCores()) {
   # Run blastp-short
   # https://www.ncbi.nlm.nih.gov/books/NBK279684/
   # flags here taken from Lukza et al.:
@@ -17,7 +17,7 @@ cmd_blastp <- function(query_file, db, out_file, threads = parallel::detectCores
     query_file,
     "-db",
     db,
-    "-task blastp-short",
+    ifelse(short_task, "-task blastp-short", ""),
     "-evalue 100000000",
     "-matrix BLOSUM62",
     "-gapopen 11",

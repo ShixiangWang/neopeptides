@@ -7,6 +7,9 @@
 #' A blast database will be created if it does not exist.
 #' @param fill a numeric value for filling default NA value when no
 #' blast result.
+#' @param use_blastp_short, default is `TRUE`, optimize blast for <30 AA by
+#' setting `blastp` flag `-task` as 'blastp-short'. If `FALSE`,
+#' use default task mode, i.e. 'blastp'.
 #' @param threads number of threads to run.
 #' @param tmp_dir path for storing temp files.
 #' @param clean_tmp if `TRUE`, remove temp directory.
@@ -30,6 +33,7 @@
 calc_iedb_score <- function(pep,
                             db = "human",
                             fill = NA_real_,
+                            use_blastp_short = TRUE,
                             threads = parallel::detectCores(),
                             tmp_dir = file.path(tempdir(), "neopeptides"),
                             clean_tmp = TRUE) {
@@ -64,7 +68,7 @@ calc_iedb_score <- function(pep,
   tmp_iedb_out <- file.path(tmp_dir, "blastp_iedbout.csv")
   db <- make_blastp_db(db, data_type = "IEDB")
   # Run blast
-  cmd_blastp(tmp_fasta, db, tmp_iedb_out, threads = threads)
+  cmd_blastp(tmp_fasta, db, tmp_iedb_out, short_task = use_blastp_short, threads = threads)
 
   blastdt <- list.files(
     path = tmp_dir,

@@ -37,6 +37,7 @@ calc_dissimilarity <- function(pep,
                                k_val = 4.86936,
                                a_val = 32,
                                fill = NA_real_,
+                               use_blastp_short = TRUE,
                                threads = parallel::detectCores(),
                                tmp_dir = file.path(tempdir(), "neopeptides"),
                                clean_tmp = TRUE) {
@@ -68,10 +69,10 @@ calc_dissimilarity <- function(pep,
   message("=> Running blastp for homology to self antigens..")
   tmp_fasta <- file.path(tmp_dir, "dissimilarity.fa")
   make_fasta_file(pep, tmp_fasta)
-  tmp_iedb_out <- file.path(tmp_dir, "blastp_self_out.csv")
+  tmp_blastp_out <- file.path(tmp_dir, "blastp_self_out.csv")
   db <- make_blastp_db(db, data_type = "Proteome")
   # Run blast
-  cmd_blastp(tmp_fasta, db, tmp_iedb_out)
+  cmd_blastp(tmp_fasta, db, tmp_blastp_out, short_task = use_blastp_short, threads = threads)
 
   blastdt <- list.files(
     path = tmp_dir,
