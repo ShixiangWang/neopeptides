@@ -4,3 +4,4 @@
 .github$
 .*\.fasta
 .*\.yml
+^README\.Rmd$
