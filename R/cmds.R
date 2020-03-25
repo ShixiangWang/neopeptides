@@ -26,7 +26,7 @@ cmd_blastp <- function(query_file, db, out_file, short_task = FALSE, threads = p
     out_file,
     "-num_threads",
     threads,
-    "-outfmt '10 qseqid sseqid qseq qstart qend sseq sstart send length mismatch pident evalue bitscore'"
+    "-outfmt \"10 qseqid sseqid qseq qstart qend sseq sstart send length mismatch pident evalue bitscore\""
   )
   system(cmds)
 }
@@ -38,6 +38,12 @@ cmd_blastdb <- function(x, dbtype = "prot") {
   # makeblastdb -in Mu_iedb.fasta -parse_seqids -hash_index -dbtype prot
   # -out Mu_iedb.fasta can be ignored
   # database may has sequences with the same name, -parse_seqids is not proper here
+
+  # https://www.biostars.org/p/413294/
+  if (.Platform$OS.type == "windows") {
+    Sys.setenv(BLASTDB_LMDB_MAP_SIZE="1000000")
+  }
+
   cmds <- paste(
     makeblastdb,
     "-in",

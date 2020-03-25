@@ -19,12 +19,14 @@
 #' install_database()
 #' }
 #' @seealso [set_blast_path], [calc_iedb_score], [calc_dissimilarity]
-install_database <- function(db_path = "~/.neopeptide/db",
+install_database <- function(db_path = normalizePath("~/.neopeptide/db", mustWork = FALSE),
                              force = FALSE,
                              species = c("human", "mouse"),
                              data_type = c("IEDB", "Proteome")) {
   species <- match.arg(species, choices = c("human", "mouse"), several.ok = TRUE)
   data_type <- match.arg(data_type, choices = c("IEDB", "Proteome"), several.ok = TRUE)
+
+  db_path <- path.expand(db_path)
 
   if (!dir.exists(db_path)) {
     dir.create(db_path, recursive = TRUE)
@@ -48,7 +50,7 @@ install_database <- function(db_path = "~/.neopeptide/db",
   }
 
   # Download database
-  local_file <- file.path(db_path, basename(database))
+  local_file <- normalizePath(file.path(db_path, basename(database)), mustWork = FALSE)
   local_fa_file <- sub("\\.gz", "", local_file)
   for (i in seq_along(database)) {
     if (!force & (file.exists(local_file[i]) | file.exists(local_fa_file[i]))) {
@@ -62,6 +64,9 @@ install_database <- function(db_path = "~/.neopeptide/db",
   # Unzip gz files
   for (i in seq_along(local_file)) {
     if (file.exists(local_file[i])) {
+      if (file.exists(local_fa_file[i])) {
+        unlink(local_fa_file[i])
+      }
       message("=> Unzipping ", local_file[i])
       R.utils::gunzip(local_file[i], remove = TRUE)
     } else {

@@ -8,7 +8,7 @@
 .path_config_file <- getOption(
   "neopeptides.config",
   default = file.path(
-    Sys.getenv("HOME", unset = "~/"),
+    Sys.getenv("HOME", unset = path.expand("~/")),
     ".neopeptide",
     "config.yml"
   )

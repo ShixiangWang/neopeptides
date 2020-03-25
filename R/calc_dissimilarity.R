@@ -41,7 +41,7 @@ calc_dissimilarity <- function(pep,
                                threads = parallel::detectCores(),
                                tmp_dir = file.path(tempdir(), "neopeptides"),
                                clean_tmp = TRUE) {
-  stopifnot(length(db) == 1)
+  stopifnot(length(db) == 1, is.character(pep))
   old <- data.table::getDTthreads()
   data.table::setDTthreads(threads = threads)
 
