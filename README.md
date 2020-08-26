@@ -15,19 +15,72 @@ of peptides for cancer immunotherapy study.
 
 ## Installation
 
-~You can install the released version of neopeptides from
-[CRAN](https://CRAN.R-project.org) with~:
-
-``` r
-install.packages("neopeptides")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("ShixiangWang/neopeptides")
 ```
+
+### Configuration
+
+To use neopeptide, `blast` is required.
+
+After installation of `blast`, you can set the path with
+
+``` r
+set_blast_path()
+# e.g. 
+# set_blast_path("/Users/wsx/anaconda3/bin/")
+```
+
+Then install required protein database with
+
+``` r
+install_database()
+```
+
+## Available features
+
+  - `calc_geometric_mean()` - Calculate the Geometric Mean.
+  - `calc_harmonic_mean()` - Calculate the Harmonic Mean.
+  - `calc_iedb_score()` - Calculate IEDB Score for Peptides.
+  - `calc_dissimilarity()` - Calculate Dissimilarity Value to Reference
+    Proteome for Peptides.
+
+## Examples
+
+``` r
+library(neopeptides)
+
+calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
+#> => Running blastp for homology to IEDB antigens..
+#> => Summing IEDB local alignments...
+#> => Done.
+#> => Removing temporary files...
+#>                               peptide   iedb_score
+#> 1: MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP 5.038247e-01
+#> 2:                         MTEYKLVVVG 5.895595e-05
+#>                                                                                    annotation
+#> 1:                      18142|polyprotein precursor|NP_041724.2|West Nile virus|11082 DVGVSAL
+#> 2: 32238|polyprotein [Hepatitis C virus subtype 1a]|ABV46251.2|Hepatitis C virus|11103 KLVVLG
+calc_dissimilarity(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
+#> => Running blastp for homology to self antigens..
+#> => Summing local alignments...
+#> => Done.
+#> => Removing temporary files...
+#>                               peptide dissimilarity
+#> 1: MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP             0
+#> 2:                         MTEYKLVVVG             0
+```
+
+## Citation
+
+Revisiting neoantigen depletion signal in the untreated cancer genome.
+Shixiang Wang, Xuan Wang, Tao Wu, Zaoke He, Huimin Li, Xiaoqin Sun,
+Xue-Song Liu bioRxiv 2020.05.11.089540; doi:
+<https://doi.org/10.1101/2020.05.11.089540>
 
 ## LICENSE
 

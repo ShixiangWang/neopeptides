@@ -5,7 +5,7 @@
 \title{Install IEDB and Proteome Reference Database}
 \usage{
 install_database(
-  db_path = "~/.neopeptide/db",
+  db_path = normalizePath("~/.neopeptide/db", mustWork = FALSE),
   force = FALSE,
   species = c("human", "mouse"),
   data_type = c("IEDB", "Proteome")

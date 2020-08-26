@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # neopeptides
 
 <!-- badges: start -->
+
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![HitCount](http://hits.dwyl.io/ShixiangWang/neopeptides.svg)](http://hits.dwyl.io/ShixiangWang/neopeptides)
 <!-- badges: end -->
@@ -24,18 +25,53 @@ The goal of **neopeptides** is to calculate and explore property indices of pept
 
 ## Installation
 
-~You can install the released version of neopeptides from [CRAN](https://CRAN.R-project.org) with~:
-
-``` r
-install.packages("neopeptides")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("ShixiangWang/neopeptides")
 ```
+
+### Configuration
+
+To use neopeptide, `blast` is required.
+
+After installation of `blast`, you can set the path with
+
+```r
+set_blast_path()
+# e.g. 
+# set_blast_path("/Users/wsx/anaconda3/bin/")
+```
+
+Then install required protein database with
+
+```r
+install_database()
+```
+
+## Available features
+
+- `calc_geometric_mean()` - Calculate the Geometric Mean.
+- `calc_harmonic_mean()` - Calculate the Harmonic Mean.
+- `calc_iedb_score()` - Calculate IEDB Score for Peptides.
+- `calc_dissimilarity()` - Calculate Dissimilarity Value to Reference Proteome for Peptides.
+
+## Examples
+
+```{r}
+library(neopeptides)
+
+calc_iedb_score(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
+calc_dissimilarity(c("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", "MTEYKLVVVG"))
+```
+
+
+## Citation
+
+Revisiting neoantigen depletion signal in the untreated cancer genome.
+Shixiang Wang, Xuan Wang, Tao Wu, Zaoke He, Huimin Li, Xiaoqin Sun, Xue-Song Liu
+bioRxiv 2020.05.11.089540; doi: https://doi.org/10.1101/2020.05.11.089540
 
 ## LICENSE
 
