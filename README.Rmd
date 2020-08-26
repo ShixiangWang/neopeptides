@@ -73,6 +73,11 @@ Revisiting neoantigen depletion signal in the untreated cancer genome.
 Shixiang Wang, Xuan Wang, Tao Wu, Zaoke He, Huimin Li, Xiaoqin Sun, Xue-Song Liu
 bioRxiv 2020.05.11.089540; doi: https://doi.org/10.1101/2020.05.11.089540
 
+## Reference
+
+- Richman LP, Vonderheide RH, Rech AJ. Neoantigen Dissimilarity to the Self-Proteome Predicts Immunogenicity and Response to Immune Checkpoint Blockade. Cell Systems. 2019 Oct;9(4):375-382.e4. DOI: 10.1016/j.cels.2019.08.009.
+- R package antigen.garnish <https://github.com/immune-health/antigen.garnish>
+
 ## LICENSE
 
 MIT © 2019-2020 Shixiang Wang, Xue-Song Liu
