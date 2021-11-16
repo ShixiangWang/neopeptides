@@ -1,12 +1,9 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # neopeptides
 
 <!-- badges: start -->
 
 [![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
 
 The goal of **neopeptides** is to calculate and explore property indices
@@ -98,16 +95,3 @@ https://doi.org/10.2147/IJGM.S325910
 ## LICENSE
 
 MIT © 2019-2020 Shixiang Wang, Xue-Song Liu
-
-The software is made available for non commercial research purposes only
-under the [MIT](LICENSE.md). However, notwithstanding any provision of
-the MIT License, the software currently may not be used for commercial
-purposes without explicit written permission after contacting Shixiang
-Wang <wangshx@shanghaitech.edu.cn> or Xue-Song Liu
-<liuxs@shanghaitech.edu.cn>.
-
------
-
-**[Cancer Biology Group](https://github.com/XSLiuLab) @ShanghaiTech**
-
-**Research group led by Xue-Song Liu in ShanghaiTech University**

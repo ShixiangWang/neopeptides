@@ -6,9 +6,7 @@
 \alias{neopeptides-package}
 \title{neopeptides: Calculate and Explore Property Indices of Neopeptides}
 \description{
-Includes functions to calculate and explore several
-    property indices for neopeptides, which are abnormal peptides
-    generated from genome.
+Includes functions to calculate and explore several property indices for neopeptides, which are abnormal peptides generated from genome.
 }
 \seealso{
 Useful links:

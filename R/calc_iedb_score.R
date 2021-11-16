@@ -22,7 +22,7 @@
 #' @importFrom data.table :=
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' calc_iedb_score("AAAAAAAAA")
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 #' calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")

@@ -22,7 +22,7 @@
 #' @importFrom data.table :=
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' calc_dissimilarity("AAAAAAAAA")
 #' calc_dissimilarity("MRLVDRRWA")
 #' calc_dissimilarity("VRLVDRRWA")

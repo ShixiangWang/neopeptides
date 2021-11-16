@@ -47,7 +47,7 @@ Data table of IEDB scores.
 Calculate IEDB Score for Peptides
 }
 \examples{
-\donttest{
+\dontrun{
 calc_iedb_score("AAAAAAAAA")
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP")
 calc_iedb_score("MTEYKLVVVGAGDVGKSALTIQLIQNHFVDEYDP", db = "mouse")

@@ -32,10 +32,10 @@ install_database <- function(db_path = normalizePath("~/.neopeptide/db", mustWor
     dir.create(db_path, recursive = TRUE)
   }
 
-  proteome_human <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Homo_sapiens.GRCh38.pep.all.fa.gz"
-  proteome_mouse <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Mus_musculus.GRCm38.pep.all.fa.gz"
-  iedb_human <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/iedb.fasta.gz"
-  iedb_mouse <- "https://github.com/XSLiuLab/neopeptide_data/raw/master/Mu_iedb.fasta.gz"
+  proteome_human <- "https://zenodo.org/record/5705134/files/Homo_sapiens.GRCh38.pep.all.fa.gz"
+  proteome_mouse <- "https://zenodo.org/record/5705134/files/Mus_musculus.GRCm38.pep.all.fa.gz"
+  iedb_human <- "https://zenodo.org/record/5705134/files/iedb.fasta.gz"
+  iedb_mouse <- "https://zenodo.org/record/5705134/files/Mu_iedb.fasta.gz"
 
   proteome <- c(proteome_human, proteome_mouse)
   iedb <- c(iedb_human, iedb_mouse)

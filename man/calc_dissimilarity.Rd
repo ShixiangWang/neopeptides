@@ -59,7 +59,7 @@ Data table of dissimilarity values (to the non-mutated proteome).
 Calculate Dissimilarity Value to Reference Proteome for Peptides
 }
 \examples{
-\donttest{
+\dontrun{
 calc_dissimilarity("AAAAAAAAA")
 calc_dissimilarity("MRLVDRRWA")
 calc_dissimilarity("VRLVDRRWA")
