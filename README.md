@@ -6,8 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![HitCount](http://hits.dwyl.io/ShixiangWang/neopeptides.svg)](http://hits.dwyl.io/ShixiangWang/neopeptides)
+stable](https://img.shields.io/badge/lifecycle-stable-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
 The goal of **neopeptides** is to calculate and explore property indices
@@ -81,6 +80,11 @@ Revisiting neoantigen depletion signal in the untreated cancer genome.
 Shixiang Wang, Xuan Wang, Tao Wu, Zaoke He, Huimin Li, Xiaoqin Sun,
 Xue-Song Liu bioRxiv 2020.05.11.089540; doi:
 <https://doi.org/10.1101/2020.05.11.089540>
+
+## Researches used this tool
+
+- Wang X, Wang S, Han Y, Xu M, Li P, Ke M, Teng Z, Huang P, Diao Z, Yan Y, Meng Q, Kuang Y, Zheng W, Liu H, Liu X, Jia B. Association of CSMD1 with Tumor Mutation Burden and Other Clinical Outcomes in Gastric Cancer. Int J Gen Med. 2021;14:8293-8299
+https://doi.org/10.2147/IJGM.S325910
 
 ## Reference
 
