@@ -37,10 +37,8 @@ Then install required protein database with
 install_database()
 ```
 
-## Available features
+## Major features
 
-  - `calc_geometric_mean()` - Calculate the Geometric Mean.
-  - `calc_harmonic_mean()` - Calculate the Harmonic Mean.
   - `calc_iedb_score()` - Calculate IEDB Score for Peptides.
   - `calc_dissimilarity()` - Calculate Dissimilarity Value to Reference
     Proteome for Peptides.
